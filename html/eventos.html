@@ -1,0 +1,492 @@
+<div class="pagina-eventos">
+    <div class="header-eventos">
+        <div class="titulo-area">
+            <h1>Feed de Eventos</h1>
+            <p>Descubra os próximos eventos e atividades programadas</p>
+        </div>
+        
+        <!-- Painel de Filtros Moderno -->
+        <div class="painel-filtros">
+            <div class="campo-filtro busca-box">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" id="filtro-texto" placeholder="Pesquisar por título..." oninput="aplicarFiltros()">
+            </div>
+            
+            <div class="campo-filtro">
+                <select id="filtro-empresa" onchange="aplicarFiltros()">
+                    <option value="">Todas as Empresas</option>
+                </select>
+            </div>
+            
+            <div class="campo-filtro">
+                <select id="filtro-ordem-data" onchange="aplicarFiltros()">
+                    <option value="recentes">Mais recentes</option>
+                    <option value="antigas">Mais antigas</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div id="eventos">
+        <div class="vazio">A carregar eventos...</div>
+    </div>
+</div>
+
+<style>
+.pagina-eventos {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: auto;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: color 0.3s ease;
+}
+
+.header-eventos {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.titulo-area h1 {
+    margin: 0 0 6px 0;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+}
+
+.titulo-area p {
+    margin: 0;
+    color: #64748b;
+    font-size: 1rem;
+}
+
+/* Painel de Filtros */
+.painel-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    background: #ffffff;
+    padding: 18px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+}
+
+.campo-filtro {
+    flex: 1;
+    min-width: 220px;
+    position: relative;
+}
+
+.busca-box {
+    display: flex;
+    align-items: center;
+}
+
+.busca-box svg {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+.busca-box input {
+    padding-left: 42px !important;
+}
+
+.campo-filtro input,
+.campo-filtro select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background-color: #f8fafc;
+    color: #1e293b;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.campo-filtro input:hover,
+.campo-filtro select:hover {
+    border-color: #94a3b8;
+}
+
+.campo-filtro input:focus,
+.campo-filtro select:focus {
+    border-color: #b51218;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(181, 18, 24, 0.1);
+}
+
+/* Grid de Eventos */
+.lista-eventos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 30px;
+}
+
+/* Cards Modernos */
+.evento {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.evento:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
+}
+
+.evento-imagem {
+    width: 100%;
+    height: 210px;
+    background-color: #f1f5f9;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.evento-imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.evento:hover .evento-imagem img {
+    transform: scale(1.06);
+}
+
+.sem-imagem {
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.evento-conteudo {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.empresa-badge {
+    align-self: flex-start;
+    background-color: #fef2f2;
+    color: #b51218;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
+
+.evento h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 0 0 10px 0;
+    color: #0f172a;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.data {
+    font-size: 13px;
+    font-weight: 600;
+    color: #b51218;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.descricao {
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+}
+
+.meta-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
+    margin-bottom: 20px;
+    margin-top: auto;
+}
+
+.meta-info span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.evento a {
+    display: block;
+    text-align: center;
+    background-color: #b51218 !important;
+    color: #ffffff !important;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(181, 18, 24, 0.25);
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.evento a:hover {
+    background-color: #941016 !important;
+    box-shadow: 0 6px 15px rgba(181, 18, 24, 0.35);
+}
+
+.evento a:active {
+    transform: scale(0.98);
+}
+
+.vazio {
+    padding: 50px;
+    background-color: #f8fafc;
+    border-radius: 16px;
+    text-align: center;
+    color: #64748b;
+    border: 2px dashed #cbd5e1;
+    font-weight: 500;
+}
+
+/* Tema Escuro / Dark Mode */
+body.tema-noturno .titulo-area h1,
+body.dark-mode .titulo-area h1 {
+    color: #f8fafc !important;
+}
+
+body.tema-noturno .titulo-area p,
+body.dark-mode .titulo-area p {
+    color: #94a3b8 !important;
+}
+
+body.tema-noturno .painel-filtros,
+body.dark-mode .painel-filtros {
+    background-color: #1e293b;
+    border-color: #334155;
+    box-shadow: none;
+}
+
+body.tema-noturno .campo-filtro input,
+body.tema-noturno .campo-filtro select,
+body.dark-mode .campo-filtro input,
+body.dark-mode .campo-filtro select {
+    background-color: #0f172a;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+body.tema-noturno .busca-box svg,
+body.dark-mode .busca-box svg {
+    color: #64748b;
+}
+
+body.tema-noturno .evento,
+body.dark-mode .evento {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+body.tema-noturno .evento:hover,
+body.dark-mode .evento:hover {
+    border-color: #475569;
+}
+
+body.tema-noturno .evento-imagem,
+body.dark-mode .evento-imagem {
+    background-color: #0f172a !important;
+}
+
+body.tema-noturno .empresa-badge,
+body.dark-mode .empresa-badge {
+    background-color: rgba(181, 18, 24, 0.25);
+    color: #fca5a5;
+}
+
+body.tema-noturno .evento h2,
+body.dark-mode .evento h2 {
+    color: #f8fafc !important;
+}
+
+body.tema-noturno .data,
+body.dark-mode .data {
+    color: #f87171 !important;
+}
+
+body.tema-noturno .descricao,
+body.dark-mode .descricao {
+    color: #94a3b8 !important;
+}
+
+body.tema-noturno .meta-info,
+body.dark-mode .meta-info {
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+body.tema-noturno .vazio,
+body.dark-mode .vazio {
+    background-color: #1e293b !important;
+    color: #94a3b8 !important;
+    border-color: #334155;
+}
+</style>
+
+<script>
+let todosEventos = [];
+
+async function carregarEventos() {
+    const area = document.getElementById("eventos");
+
+    try {
+        const resposta = await fetch("http://localhost:3000/api/posts?tipo=evento");
+        const eventos = await resposta.json();
+
+        if (!resposta.ok) {
+            area.innerHTML = `<div class="vazio">Erro ao carregar eventos.</div>`;
+            return;
+        }
+
+        if (eventos.length === 0) {
+            area.innerHTML = `<div class="vazio">Nenhum evento publicado ainda.</div>`;
+            return;
+        }
+
+        todosEventos = eventos;
+        preencherSelectEmpresas(eventos);
+        aplicarFiltros();
+
+    } catch (erro) {
+        console.error(erro);
+        area.innerHTML = `<div class="vazio">Erro ao conectar com o servidor.</div>`;
+    }
+}
+
+function preencherSelectEmpresas(eventos) {
+    const selectEmpresa = document.getElementById("filtro-empresa");
+    const empresas = [...new Set(eventos.map(e => e.empresa_nome).filter(Boolean))];
+    
+    selectEmpresa.innerHTML = '<option value="">Todas as Empresas</option>';
+    empresas.forEach(empresa => {
+        const opt = document.createElement("option");
+        opt.value = empresa;
+        opt.textContent = empresa;
+        selectEmpresa.appendChild(opt);
+    });
+}
+
+function aplicarFiltros() {
+    const texto = document.getElementById("filtro-texto").value.toLowerCase();
+    const empresaSelecionada = document.getElementById("filtro-empresa").value;
+    const ordemData = document.getElementById("filtro-ordem-data").value;
+
+    let resultado = todosEventos.filter(evento => {
+        const tituloMatch = (evento.titulo || "").toLowerCase().includes(texto);
+        const empresaMatch = !empresaSelecionada || evento.empresa_nome === empresaSelecionada;
+        return tituloMatch && empresaMatch;
+    });
+
+    resultado.sort((a, b) => {
+        const dataA = new Date(a.data_evento || a.criado_em || a.created_at || a.id);
+        const dataB = new Date(b.data_evento || b.criado_em || b.created_at || b.id);
+        return ordemData === "recentes" ? dataB - dataA : dataA - dataB;
+    });
+
+    renderizarEventos(resultado);
+}
+
+function renderizarEventos(listaEventos) {
+    const area = document.getElementById("eventos");
+
+    if (listaEventos.length === 0) {
+        area.innerHTML = `<div class="vazio">Nenhum evento encontrado com os filtros aplicados.</div>`;
+        return;
+    }
+
+    let htmlCards = listaEventos.map(evento => {
+        const imagemHTML = evento.imagem
+            ? `<img src="http://localhost:3000/uploads/${evento.imagem}" alt="${escaparHTML(evento.titulo)}">`
+            : `<span class="sem-imagem">Sem Imagem</span>`;
+
+        const dataFormatada = formatarData(evento.data_evento);
+
+        return `
+            <article class="evento">
+                <div class="evento-imagem">
+                    ${imagemHTML}
+                </div>
+                <div class="evento-conteudo">
+                    <span class="empresa-badge">
+                        ${escaparHTML(evento.empresa_nome || 'Geral')}
+                    </span>
+                    <h2>${escaparHTML(evento.titulo)}</h2>
+                    ${dataFormatada ? `<div class="data">📅 ${dataFormatada}</div>` : ''}
+                    <div class="descricao">${escaparHTML(evento.descricao)}</div>
+                    <div class="meta-info">
+                        <span>❤️ ${evento.total_likes || 0}</span>
+                        <span>💬 ${evento.total_comentarios || 0}</span>
+                    </div>
+                    <a href="index.php?pagina=publicacao&id=${evento.id}">Ver evento</a>
+                </div>
+            </article>
+        `;
+    }).join("");
+
+    area.innerHTML = `<div class="lista-eventos">${htmlCards}</div>`;
+}
+
+function formatarData(data) {
+    if (!data) return "";
+    const partes = String(data).substring(0, 10).split("-");
+    if (partes.length < 3) return data;
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+function escaparHTML(texto) {
+    const div = document.createElement("div");
+    div.textContent = texto || "";
+    return div.innerHTML;
+}
+
+carregarEventos();
+</script>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ribeirão Pires</title>
+
+    <style>
+        /* ---------- Cores (tema claro e escuro) ---------- */
+        :root {
+            --fundo: #ffffff;
+            --fundo-alt: #f4f4f4;
+            --titulo: #1f1f1f;
+            --texto: #555555;
+            --destaque: #b51218;
+            --destaque-hover: #941016;
+            --sombra: 0 4px 16px rgba(0, 0, 0, 0.10);
+            --borda-img: transparent;
+        }
+
+        body.tema-noturno,
+        body.dark-mode {
+            --fundo: #121212;
+            --fundo-alt: #181818;
+            --titulo: #ffffff;
+            --texto: #d4d4d4;
+            --sombra: 0 4px 16px rgba(0, 0, 0, 0.5);
+            --borda-img: #2a2a2a;
+        }
+
+        /* ---------- Base ---------- */
+        body {
+            margin: 0;
+            font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            background-color: var(--fundo);
+            color: var(--titulo);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* ---------- Imagem de abertura ---------- */
+        .hero {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            background-color: #000000;
+        }
+
+        /* Preenche as laterais com a própria imagem desfocada */
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: -24px;
+            background: var(--hero-img) center / cover no-repeat;
+            filter: blur(24px) brightness(0.7);
+        }
+
+        /* A imagem aparece inteira, sem corte e sem distorcer */
+        .hero-image {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: clamp(160px, 22vw, 270px);
+            object-fit: contain;
+        }
+
+        /* ---------- Apresentação ---------- */
+        .apresentacao {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 28px 20px 40px;
+            text-align: center;
+        }
+
+        /* Sem bloco: o CSS global dos cards não deve afetar esta seção */
+        body .apresentacao {
+            background: transparent !important;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .apresentacao h1 {
+            margin: 0 0 12px;
+            font-size: 2rem;
+            line-height: 1.2;
+            color: var(--titulo);
+        }
+
+        .apresentacao p {
+            margin: 6px 0;
+            font-size: 1.05rem;
+            color: var(--texto);
+        }
+
+        /* ---------- Botões ---------- */
+        .btn-conhecer,
+        .btn-card {
+            display: inline-block;
+            background-color: var(--destaque);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-conhecer {
+            margin-top: 20px;
+            padding: 11px 26px;
+        }
+
+        .btn-card {
+            padding: 10px 22px;
+            font-size: 0.95rem;
+        }
+
+        .btn-conhecer:hover,
+        .btn-card:hover {
+            background-color: var(--destaque-hover);
+        }
+
+        .btn-conhecer:focus-visible,
+        .btn-card:focus-visible {
+            outline: 3px solid var(--titulo);
+            outline-offset: 3px;
+        }
+
+        /* ---------- Cards ---------- */
+        .card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 48px;
+            padding: 52px 8%;
+            box-sizing: border-box;
+        }
+
+        .card-1 { background-color: var(--fundo-alt); }
+        .card-2 { background-color: var(--fundo); }
+
+        .card-conteudo {
+            flex: 1;
+            max-width: 460px;
+        }
+
+        .card-conteudo h2 {
+            margin: 0 0 10px;
+            font-size: 1.6rem;
+            line-height: 1.25;
+            color: var(--titulo);
+        }
+
+        .card-conteudo p {
+            margin: 0 0 20px;
+            color: var(--texto);
+        }
+
+        .card-imagem {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            max-width: 440px;
+        }
+
+        .imagem-quadrado {
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid var(--borda-img);
+            box-shadow: var(--sombra);
+            background-color: var(--fundo-alt);
+        }
+
+        .imagem-quadrado img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ---------- Celular ---------- */
+        @media (max-width: 768px) {
+            .card,
+            .card-2 {
+                flex-direction: column;
+                gap: 24px;
+                padding: 36px 20px;
+                text-align: center;
+            }
+
+            /* Nos dois cards, o texto vem primeiro no celular */
+            .card-2 .card-imagem { order: 2; }
+            .card-2 .card-conteudo { order: 1; }
+
+            .card-imagem { width: 100%; max-width: none; }
+            .imagem-quadrado { max-width: 100%; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="hero" style="--hero-img: url('imgs/home.png')">
+        <img
+            class="hero-image"
+            src="imgs/home.png"
+            alt="Vista de Ribeirão Pires"
+        >
+    </section>
+
+    <section class="apresentacao">
+        <h1>Seja bem-vindo(a) a Ribeirão Pires</h1>
+
+        <p>
+            Veja o que acontece na cidade e descubra lugares para visitar.
+        </p>
+
+        <p>
+            Leia as notícias, confira os eventos e conheça nossa história.
+        </p>
+
+        <a href="#" class="btn-conhecer">
+            Veja oque te espera abaixo
+        </a>
+    </section>
+
+    <section class="cards">
+
+        <div class="card card-1">
+            <div class="card-conteudo">
+                <h2>Notícias</h2>
+                <p>
+                  Fique por dentro de tudo o que acontece na nossa cidade. Acompanhe de perto as últimas novidades, o andamento das obras públicas nos bairros, a liberação de novos serviços e todos os avisos importantes que impactam diretamente a rotina dos moradores de Ribeirão Pires.
+                </p>
+              
+            </div>
+
+            <div class="card-imagem">
+                <div class="imagem-quadrado">
+                    <img
+                        src="img/card1.png"
+                        alt="Notícias de Ribeirão Pires"
+                    >
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-2">
+            <div class="card-imagem">
+                <div class="imagem-quadrado">
+                    <img
+                        src="img/card2.png"
+                        alt="Patrimônio histórico de Ribeirão Pires"
+                    >
+                </div>
+            </div>
+
+            <div class="card-conteudo">
+                <h2>História e cultura</h2>
+                <p>
+                   Descubra as origens que moldaram a nossa identidade. Faça uma viagem no tempo para entender como Ribeirão Pires nasceu, cresceu e se transformou ao longo dos anos, conhecendo de perto as histórias, os marcos históricos e as tradições culturais que a gente orgulhosamente mantém vivas até hoje.
+                </p>
+              
+            </div>
+        </div>
+
+    </section>
+
+</body>
+</html>

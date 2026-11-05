@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turismo de Ribeirão Pires</title>
+    <!-- Leaflet CSS para o Mapa Interativo -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+</head>
+<body>
+
+    <section class="turismo">
+
+        <h1>Turismo em Ribeirão Pires</h1>
+
+        <div class="turismo-container">
+
+            <!-- Painel de Filtros e Alternância de Visualização -->
+            <div class="painel-controle">
+                <div class="campo-busca">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <input type="text" id="filtro-texto" placeholder="Pesquisar ponto turístico..." oninput="filtrarTurismo()">
+                </div>
+                <div class="botoes-visualizacao">
+                    <button id="btn-cards" class="ativo" onclick="mudarVisualizacao('cards')"> Cards</button>
+                    <button id="btn-mapa" onclick="mudarVisualizacao('mapa')"> Mapa Interativo</button>
+                </div>
+            </div>
+
+            <!-- Seção de Cards -->
+            <div id="container-cards" class="turismo-cards">
+                <!-- Os cartões são gerados dinamicamente via JS -->
+            </div>
+
+            <!-- Seção do Mapa Interativo -->
+            <div id="container-mapa" class="mapa-wrapper" style="display: none;">
+                <div id="map"></div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- MODAL DE DETALHES -->
+    <div id="turismo-modal" class="modal-overlay" onclick="fecharModalFora(event)">
+        <div class="modal-conteudo">
+            <span class="modal-fechar" onclick="fecharModal()">&times;</span>
+            <div class="modal-imagem-container">
+                <img id="modal-img" src="" alt="" onclick="expandirImagem(this)">
+                <span class="dica-zoom"> Clique para expandir</span>
+            </div>
+            <h2 id="modal-titulo"></h2>
+            <p id="modal-descricao"></p>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX PARA IMAGEM EM TELA CHEIA -->
+    <div id="imagem-expandida-modal" class="lightbox-overlay" onclick="fecharImagemExpandida()">
+        <span class="lightbox-fechar">&times;</span>
+        <img id="lightbox-img" src="" alt="Imagem Expandida">
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .turismo {
+        padding: 50px 20px;
+        min-height: 100vh;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .turismo h1 {
+        text-align: center;
+        font-size: 32px;
+        margin-bottom: 30px;
+        color: #222;
+    }
+
+    /* Painel de Controles e Filtros */
+    .painel-controle {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        background: #ffffff;
+        padding: 16px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        border: 1px solid #e2e8f0;
+    }
+
+    .campo-busca {
+        position: relative;
+        flex: 1;
+        min-width: 260px;
+    }
+
+    .campo-busca svg {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .campo-busca input {
+        width: 100%;
+        padding: 12px 16px 12px 42px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        background: #f8fafc;
+        color: #1e293b;
+        transition: all 0.2s ease;
+    }
+
+    .campo-busca input:focus {
+        border-color: #b51218;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(181, 18, 24, 0.15);
+    }
+
+    .botoes-visualizacao {
+        display: flex;
+        gap: 10px;
+    }
+
+    .botoes-visualizacao button {
+        padding: 10px 18px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        color: #475569;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .botoes-visualizacao button.ativo {
+        background: #b51218;
+        color: #fff;
+        border-color: #b51218;
+    }
+
+    /* Grid de Cards */
+    .turismo-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 25px;
+    }
+
+    .turismo-card {
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        border: 1px solid #e2e8f0;
+        transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    .turismo-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .turismo-card-imagem {
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+        background-color: #f1f5f9;
+    }
+
+    .turismo-card-imagem img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .turismo-card:hover .turismo-card-imagem img {
+        transform: scale(1.05);
+    }
+
+    .turismo-card-conteudo {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    .turismo-card-conteudo h2 {
+        font-size: 18px;
+        margin-bottom: 8px;
+        color: #0f172a;
+    }
+
+    .turismo-card-conteudo p {
+        font-size: 14px;
+        color: #64748b;
+        line-height: 1.5;
+        margin-bottom: 20px;
+        flex: 1;
+    }
+
+    .turismo-card-conteudo button {
+        border: 0;
+        padding: 10px 16px;
+        background: #b51218;
+        color: #ffffff;
+        cursor: pointer;
+        font-size: 14px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+        width: 100%;
+    }
+
+    .turismo-card-conteudo button:hover {
+        background: #941016;
+    }
+
+    /* Mapa Wrapper */
+    .mapa-wrapper {
+        width: 100%;
+        height: 550px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #cbd5e1;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    #map {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Modal / Pop-up */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.65);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+        padding: 20px;
+        backdrop-filter: blur(4px);
+    }
+
+    .modal-conteudo {
+        background: #ffffff;
+        width: 100%;
+        max-width: 550px;
+        border-radius: 14px;
+        padding: 24px;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-fechar {
+        position: absolute;
+        top: 12px;
+        right: 18px;
+        font-size: 28px;
+        font-weight: bold;
+        color: #888;
+        cursor: pointer;
+    }
+
+    .modal-fechar:hover {
+        color: #b51218;
+    }
+
+    .modal-imagem-container {
+        position: relative;
+        width: 100%;
+        height: 250px;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 16px;
+        background-color: #eee;
+    }
+
+    .modal-imagem-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        cursor: zoom-in;
+    }
+
+    .dica-zoom {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        background: rgba(0,0,0,0.6);
+        color: #fff;
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+
+    .modal-conteudo h2 {
+        font-size: 22px;
+        color: #0f172a;
+        margin-bottom: 10px;
+    }
+
+    .modal-conteudo p {
+        font-size: 15px;
+        color: #475569;
+        line-height: 1.6;
+    }
+
+    /* Lightbox */
+    .lightbox-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        cursor: zoom-out;
+    }
+
+    .lightbox-overlay img {
+        max-width: 90%;
+        max-height: 90vh;
+        border-radius: 8px;
+    }
+
+    .lightbox-fechar {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 36px;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    /* Dark Mode */
+    body.tema-noturno, body.dark-mode {
+        background-color: #0f172a !important;
+        color: #f8fafc !important;
+    }
+
+    body.tema-noturno .turismo h1, body.dark-mode .turismo h1 {
+        color: #f8fafc !important;
+    }
+
+    body.tema-noturno .painel-controle, body.dark-mode .painel-controle,
+    body.tema-noturno .turismo-card, body.dark-mode .turismo-card,
+    body.tema-noturno .modal-conteudo, body.dark-mode .modal-conteudo {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+    }
+
+    body.tema-noturno .campo-busca input, body.dark-mode .campo-busca input {
+        background: #0f172a !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+
+    body.tema-noturno .botoes-visualizacao button, body.dark-mode .botoes-visualizacao button {
+        background: #0f172a !important;
+        border-color: #334155 !important;
+        color: #94a3b8 !important;
+    }
+
+    body.tema-noturno .botoes-visualizacao button.ativo, body.dark-mode .botoes-visualizacao button.ativo {
+        background: #b51218 !important;
+        color: #fff !important;
+    }
+
+    body.tema-noturno .turismo-card-conteudo h2, body.dark-mode .turismo-card-conteudo h2,
+    body.tema-noturno .modal-conteudo h2, body.dark-mode .modal-conteudo h2 {
+        color: #f8fafc !important;
+    }
+
+    body.tema-noturno .turismo-card-conteudo p, body.dark-mode .turismo-card-conteudo p,
+    body.tema-noturno .modal-conteudo p, body.dark-mode .modal-conteudo p {
+        color: #94a3b8 !important;
+    }
+    </style>
+
+    <script>
+    const pontosTuristicos = [
+        {
+            id: 1,
+            titulo: "Torre de Miroku",
+            imagem: "img/1.png",
+            descricao: "A Torre de Miroku é um impressionante templo construído às margens da Represa Billings. Com 32 metros de altura e revestida de folha de ouro, é um local de contemplação, paz e rica arquitetura japonesa.",
+            lat: -23.7125,
+            lng: -46.4389
+        },
+        {
+            id: 2,
+            titulo: "Parque Oriental",
+            imagem: "img/2.png",
+            descricao: "O Parque Oriental (Parque Municipal Milton Marinho de Moraes) oferece ampla estrutura de lazer, trilhas ecológicas, espaço para pic-nic, jardim japonês e é de onde partem os barcos para a Torre de Miroku.",
+            lat: -23.7082,
+            lng: -46.4421
+        },
+        {
+            id: 3,
+            titulo: "Mirante São José",
+            imagem: "img/3.png",
+            descricao: "Localizado no morro de São José a mais de 800m de altitude, o Mirante abriga a estátua de São José e proporciona uma linda vista de toda a região centro e serrana.",
+            lat: -23.7198,
+            lng: -46.4182
+        },
+        {
+            id: 4,
+            titulo: "Vila do Doce",
+            imagem: "img/4.png",
+            descricao: "Situada no coração de Ribeirão Pires, a Vila do Doce é uma praça temática repleta de quiosques gastronômicos, feiras de artesanato, palcos para shows ao vivo e diversão para crianças.",
+            lat: -23.7154,
+            lng: -46.4132
+        },
+        {
+            id: 5,
+            titulo: "Capela do Pilar",
+            imagem: "img/5.png",
+            descricao: "Tombada pelo CONDEPHAAT, a Capela de Nossa Senhora do Pilar foi fundada em 1714. É um dos monumentos históricos e religiosos mais antigos da Grande São Paulo.",
+            lat: -23.7251,
+            lng: -46.4055
+        },
+        {
+            id: 6,
+            titulo: "Mirante Santo Antônio",
+            imagem: "img/6.png",
+            descricao: "Localizado no Morro de Santo Antônio, o local oferece uma visão privilegiada de quase 360 graus da vegetação de Mata Atlântica e da malha urbana.",
+            lat: -23.7012,
+            lng: -46.4250
+        },
+        {
+            id: 7,
+            titulo: "Pedra do Elefante",
+            imagem: "img/7.png",
+            descricao: "Ponto turístico natural marcante na divisa da região, conhecido por seu formato que lembra um elefante e por oferecer uma vista panorâmica incrível da mata e das cidades vizinhas.",
+            lat: -23.6828,
+            lng: -46.4114
+        },
+
+   
+        {
+            id: 8,
+            titulo: "Parque Pérola da Serra",
+            imagem: "img/8.png",
+            descricao: "O Parque Pérola da Serra abriga uma área preservada de Mata Atlântica bem próxima ao centro, com fauna nativa, pomares, equipamentos de ginástica e educação ambiental.",
+            lat: -23.7200,
+            lng: -46.4280
+        },
+        {
+            id: 9,
+            titulo: "Parque Municipal Prof. Luiz Carlos Grecco",
+            imagem: "img/9.png",
+            descricao: "Antigo Parque dos Maçons, conta com ampla área verde preservada, esculturas de aço inox expostas ao ar livre, jardim japonês com carpas e o Museu Histórico Municipal.",
+            lat: -23.7021,
+            lng: -46.4194
+        },
+        {
+            id: 10,
+            titulo: "Castelo de Robson Miguel",
+            imagem: "img/10.png",
+            descricao: "Um autêntico castelo construído pelo renomado violonista Robson Miguel. O espaço possui arquitetura medieval rica em detalhes históricos, além de receber eventos culturais e jantares temáticos.",
+            lat: -23.7226,
+            lng: -46.4297
+        },
+        {
+            id: 11,
+            titulo: "Parque e Pesqueiro Santa Helena",
+            imagem: "img/11.png",
+            descricao: "Excelente refúgio natural para famílias, oferecendo lagos para pesca esportiva, áreas de caminhada, contato direto com a natureza e forte apelo de lazer regional.",
+            lat: -23.7381,
+            lng: -46.4312
+        },
+        {
+            id: 12,
+            titulo: "Complexo Ayrton Senna",
+            imagem: "img/12.png",
+            descricao: "Grande complexo municipal localizado no centro, palco principal dos maiores eventos da cidade, incluindo o tradicional Festival do Chocolate de Ribeirão Pires.",
+            lat: -23.7121,
+            lng: -46.4158
+        },
+        {
+            id: 13,
+            titulo: "Jardim Oriental",
+            imagem: "img/13.png",
+            descricao: "Localizado na Praça Mitio Tanaka, é um charmoso espaço público projetado com elementos clássicos do paisagismo japonês para simbolizar a forte ligação cultural com a colônia nipônica.",
+            lat: -23.7162,
+            lng: -46.4099
+        }
+    ];
+    
+
+    let mapa = null;
+    let marcadoresLayer = null;
+
+    function renderizarCards(dados) {
+        const container = document.getElementById("container-cards");
+        if (dados.length === 0) {
+            container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:#64748b;">Nenhum ponto turístico encontrado.</div>`;
+            return;
+        }
+
+        container.innerHTML = dados.map(item => `
+            <div class="turismo-card">
+                <div class="turismo-card-imagem">
+                    <img src="${item.imagem}" alt="${item.titulo}">
+                </div>
+                <div class="turismo-card-conteudo">
+                    <h2>${item.titulo}</h2>
+                    <p>${item.descricao}</p>
+                    <button onclick="abrirModal('${item.titulo}', '${item.imagem}', '${item.descricao.replace(/'/g, "\\'")}')">CONHECER</button>
+                </div>
+            </div>
+        `).join("");
+    }
+
+    function filtrarTurismo() {
+        const termo = document.getElementById("filtro-texto").value.toLowerCase();
+        const filtrados = pontosTuristicos.filter(item => 
+            item.titulo.toLowerCase().includes(termo) || 
+            item.descricao.toLowerCase().includes(termo)
+        );
+        renderizarCards(filtrados);
+        if (mapa) atualizarMarcadoresMapa(filtrados);
+    }
+
+    function mudarVisualizacao(modo) {
+        const btnCards = document.getElementById("btn-cards");
+        const btnMapa = document.getElementById("btn-mapa");
+        const containerCards = document.getElementById("container-cards");
+        const containerMapa = document.getElementById("container-mapa");
+
+        if (modo === 'cards') {
+            btnCards.classList.add("ativo");
+            btnMapa.classList.remove("ativo");
+            containerCards.style.display = "grid";
+            containerMapa.style.display = "none";
+        } else {
+            btnMapa.classList.add("ativo");
+            btnCards.classList.remove("ativo");
+            containerCards.style.display = "none";
+            containerMapa.style.display = "block";
+            
+            setTimeout(() => {
+                if (!mapa) {
+                    inicializarMapa();
+                } else {
+                    mapa.invalidateSize();
+                }
+            }, 100);
+        }
+    }
+
+    function inicializarMapa() {
+        mapa = L.map('map').setView([-23.715, -46.415], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(mapa);
+
+        marcadoresLayer = L.layerGroup().addTo(mapa);
+        atualizarMarcadoresMapa(pontosTuristicos);
+    }
+
+    function atualizarMarcadoresMapa(dados) {
+        if (!marcadoresLayer) return;
+        marcadoresLayer.clearLayers();
+
+        dados.forEach(item => {
+            const marker = L.marker([item.lat, item.lng]).addTo(marcadoresLayer);
+            marker.bindPopup(`
+                <div style="text-align: center; max-width: 180px;">
+                    <img src="${item.imagem}" style="width:100%; height:90px; object-fit:cover; border-radius:6px; margin-bottom:6px;">
+                    <h3 style="font-size:14px; margin-bottom:4px; font-weight:700;">${item.titulo}</h3>
+                    <button onclick="abrirModal('${item.titulo}', '${item.imagem}', '${item.descricao.replace(/'/g, "\\'")}')" style="background:#b51218; color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:600;">Conhecer</button>
+                </div>
+            `);
+        });
+    }
+
+    function abrirModal(titulo, imagemSrc, descricao) {
+        document.getElementById("modal-titulo").textContent = titulo;
+        document.getElementById("modal-img").src = imagemSrc;
+        document.getElementById("modal-descricao").textContent = descricao;
+        document.getElementById("turismo-modal").style.display = "flex";
+    }
+
+    function fecharModal() {
+        document.getElementById("turismo-modal").style.display = "none";
+    }
+
+    function fecharModalFora(event) {
+        if (event.target.id === "turismo-modal") {
+            fecharModal();
+        }
+    }
+
+    function expandirImagem(imgElement) {
+        document.getElementById("lightbox-img").src = imgElement.src;
+        document.getElementById("imagem-expandida-modal").style.display = "flex";
+    }
+
+    function fecharImagemExpandida() {
+        document.getElementById("imagem-expandida-modal").style.display = "none";
+    }
+
+    renderizarCards(pontosTuristicos);
+    </script>
+
+</body>
+</html>

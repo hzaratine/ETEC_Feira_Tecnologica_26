@@ -1,0 +1,469 @@
+<div class="pagina-noticias">
+    <div class="header-noticias">
+        <div class="titulo-area">
+            <h1>Feed de Notícias</h1>
+            <p>Fique por dentro das últimas novidades e publicações</p>
+        </div>
+        
+        <!-- Painel de Filtros Moderno -->
+        <div class="painel-filtros">
+            <div class="campo-filtro busca-box">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" id="filtro-texto" placeholder="Pesquisar por título..." oninput="aplicarFiltros()">
+            </div>
+            
+            <div class="campo-filtro">
+                <select id="filtro-empresa" onchange="aplicarFiltros()">
+                    <option value="">Todas as Empresas</option>
+                </select>
+            </div>
+            
+            <div class="campo-filtro">
+                <select id="filtro-ordem-data" onchange="aplicarFiltros()">
+                    <option value="recentes">Mais recentes</option>
+                    <option value="antigas">Mais antigas</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div id="noticias">
+        <div class="vazio">A carregar notícias...</div>
+    </div>
+</div>
+
+<style>
+.pagina-noticias {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: auto;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: color 0.3s ease;
+}
+
+.header-noticias {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.titulo-area h1 {
+    margin: 0 0 6px 0;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+}
+
+.titulo-area p {
+    margin: 0;
+    color: #64748b;
+    font-size: 1rem;
+}
+
+/* Painel de Filtros */
+.painel-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    background: #ffffff;
+    padding: 18px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+}
+
+.campo-filtro {
+    flex: 1;
+    min-width: 220px;
+    position: relative;
+}
+
+.busca-box {
+    display: flex;
+    align-items: center;
+}
+
+.busca-box svg {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+.busca-box input {
+    padding-left: 42px !important;
+}
+
+.campo-filtro input,
+.campo-filtro select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background-color: #f8fafc;
+    color: #1e293b;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.campo-filtro input:hover,
+.campo-filtro select:hover {
+    border-color: #94a3b8;
+}
+
+.campo-filtro input:focus,
+.campo-filtro select:focus {
+    border-color: #b51218;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(181, 18, 24, 0.1);
+}
+
+/* Grid de Notícias */
+.lista-noticias {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 30px;
+}
+
+/* Cards Modernos */
+.noticia {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.noticia:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
+}
+
+.noticia-imagem {
+    width: 100%;
+    height: 210px;
+    background-color: #f1f5f9;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.noticia-imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.noticia:hover .noticia-imagem img {
+    transform: scale(1.06);
+}
+
+.sem-imagem {
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.noticia-conteudo {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.empresa-badge {
+    align-self: flex-start;
+    background-color: #fef2f2;
+    color: #b51218;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
+
+.noticia h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 0 0 10px 0;
+    color: #0f172a;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    /* Padroniza o título em no máximo 2 linhas */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.descricao {
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    /* Padroniza a descrição em no máximo 3 linhas */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+}
+
+.meta-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
+    margin-bottom: 20px;
+    margin-top: auto;
+}
+
+.meta-info span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.noticia a {
+    display: block;
+    text-align: center;
+    background-color: #b51218 !important;
+    color: #ffffff !important;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(181, 18, 24, 0.25);
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.noticia a:hover {
+    background-color: #941016 !important;
+    box-shadow: 0 6px 15px rgba(181, 18, 24, 0.35);
+}
+
+.noticia a:active {
+    transform: scale(0.98);
+}
+
+.vazio {
+    padding: 50px;
+    background-color: #f8fafc;
+    border-radius: 16px;
+    text-align: center;
+    color: #64748b;
+    border: 2px dashed #cbd5e1;
+    font-weight: 500;
+}
+
+/* Tema Escuro / Dark Mode */
+body.tema-noturno .titulo-area h1,
+body.dark-mode .titulo-area h1 {
+    color: #f8fafc !important;
+}
+
+body.tema-noturno .titulo-area p,
+body.dark-mode .titulo-area p {
+    color: #94a3b8 !important;
+}
+
+body.tema-noturno .painel-filtros,
+body.dark-mode .painel-filtros {
+    background-color: #1e293b;
+    border-color: #334155;
+    box-shadow: none;
+}
+
+body.tema-noturno .campo-filtro input,
+body.tema-noturno .campo-filtro select,
+body.dark-mode .campo-filtro input,
+body.dark-mode .campo-filtro select {
+    background-color: #0f172a;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+body.tema-noturno .busca-box svg,
+body.dark-mode .busca-box svg {
+    color: #64748b;
+}
+
+body.tema-noturno .noticia,
+body.dark-mode .noticia {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+body.tema-noturno .noticia:hover,
+body.dark-mode .noticia:hover {
+    border-color: #475569;
+}
+
+body.tema-noturno .noticia-imagem,
+body.dark-mode .noticia-imagem {
+    background-color: #0f172a !important;
+}
+
+body.tema-noturno .empresa-badge,
+body.dark-mode .empresa-badge {
+    background-color: rgba(181, 18, 24, 0.25);
+    color: #fca5a5;
+}
+
+body.tema-noturno .noticia h2,
+body.dark-mode .noticia h2 {
+    color: #f8fafc !important;
+}
+
+body.tema-noturno .descricao,
+body.dark-mode .descricao {
+    color: #94a3b8 !important;
+}
+
+body.tema-noturno .meta-info,
+body.dark-mode .meta-info {
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+body.tema-noturno .vazio,
+body.dark-mode .vazio {
+    background-color: #1e293b !important;
+    color: #94a3b8 !important;
+    border-color: #334155;
+}
+</style>
+
+<script>
+let todassNoticias = [];
+
+async function carregarNoticias() {
+    const area = document.getElementById("noticias");
+
+    try {
+        const resposta = await fetch("http://localhost:3000/api/posts?tipo=noticia");
+        const noticias = await resposta.json();
+
+        if (!resposta.ok) {
+            area.innerHTML = `<div class="vazio">Erro ao carregar notícias.</div>`;
+            return;
+        }
+
+        if (noticias.length === 0) {
+            area.innerHTML = `<div class="vazio">Nenhuma notícia publicada ainda.</div>`;
+            return;
+        }
+
+        todassNoticias = noticias;
+        preencherSelectEmpresas(noticias);
+        aplicarFiltros();
+
+    } catch (erro) {
+        console.error(erro);
+        area.innerHTML = `<div class="vazio">Erro ao conectar com o servidor.</div>`;
+    }
+}
+
+function preencherSelectEmpresas(noticias) {
+    const selectEmpresa = document.getElementById("filtro-empresa");
+    const empresas = [...new Set(noticias.map(n => n.empresa_nome).filter(Boolean))];
+    
+    selectEmpresa.innerHTML = '<option value="">Todas as Empresas</option>';
+    empresas.forEach(empresa => {
+        const opt = document.createElement("option");
+        opt.value = empresa;
+        opt.textContent = empresa;
+        selectEmpresa.appendChild(opt);
+    });
+}
+
+function aplicarFiltros() {
+    const texto = document.getElementById("filtro-texto").value.toLowerCase();
+    const empresaSelecionada = document.getElementById("filtro-empresa").value;
+    const ordemData = document.getElementById("filtro-ordem-data").value;
+
+    let resultado = todassNoticias.filter(noticia => {
+        const tituloMatch = (noticia.titulo || "").toLowerCase().includes(texto);
+        const empresaMatch = !empresaSelecionada || noticia.empresa_nome === empresaSelecionada;
+        return tituloMatch && empresaMatch;
+    });
+
+    resultado.sort((a, b) => {
+        const dataA = new Date(a.criado_em || a.created_at || a.id);
+        const dataB = new Date(b.criado_em || b.created_at || b.id);
+        return ordemData === "recentes" ? dataB - dataA : dataA - dataB;
+    });
+
+    renderizarNoticias(resultado);
+}
+
+function renderizarNoticias(listaNoticias) {
+    const area = document.getElementById("noticias");
+
+    if (listaNoticias.length === 0) {
+        area.innerHTML = `<div class="vazio">Nenhuma notícia encontrada com os filtros aplicados.</div>`;
+        return;
+    }
+
+    let htmlCards = listaNoticias.map(noticia => {
+        const imagemHTML = noticia.imagem
+            ? `<img src="http://localhost:3000/uploads/${noticia.imagem}" alt="${escaparHTML(noticia.titulo)}">`
+            : `<span class="sem-imagem">Sem Imagem</span>`;
+
+        return `
+            <article class="noticia">
+                <div class="noticia-imagem">
+                    ${imagemHTML}
+                </div>
+                <div class="noticia-conteudo">
+                    <span class="empresa-badge">
+                        ${escaparHTML(noticia.empresa_nome || 'Geral')}
+                    </span>
+                    <h2>${escaparHTML(noticia.titulo)}</h2>
+                    <div class="descricao">${escaparHTML(noticia.descricao)}</div>
+                    <div class="meta-info">
+                        <span>❤️ ${noticia.total_likes || 0}</span>
+                        <span>💬 ${noticia.total_comentarios || 0}</span>
+                    </div>
+                    <a href="index.php?pagina=publicacao&id=${noticia.id}">Ver notícia</a>
+                </div>
+            </article>
+        `;
+    }).join("");
+
+    area.innerHTML = `<div class="lista-noticias">${htmlCards}</div>`;
+}
+
+function escaparHTML(texto) {
+    const div = document.createElement("div");
+    div.textContent = texto || "";
+    return div.innerHTML;
+}
+
+carregarNoticias();
+</script>
