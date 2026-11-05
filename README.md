@@ -1,7 +1,7 @@
 # Feira Tecnologica 26
 
 Guia completo para colocar o projeto no ar em um computador com Windows, usando XAMPP, MySQL e Node.js.
-
+![Tecnologias](https://skillicons.dev/icons?i=html,css,js,nodejs,mysql,apache,vscode)
 ---
 
 ## Sumario
