@@ -6,7 +6,7 @@ Plataforma web desenvolvida para a Feira Tecnológica, com sistema de login, pub
 
 <br>
 
-<img src="https://skillicons.dev/icons?i=html,css,js,nodejs,php,mysql,apache,figma,vscode,git&perline=10" alt="Tecnologias utilizadas" />
+<img src="https://skillicons.dev/icons?i=html,css,js,nodejs,php,mysql,figma,vscode,git&perline=10" alt="Tecnologias utilizadas" />
 
 <br><br>
 
