@@ -1,0 +1,118 @@
+/* ============================================================
+   VARIÁVEIS (TEMA CLARO E ESCURO)
+   ============================================================ */
+:root {
+  --bg-principal: #f5f5f7;
+  --bg-card: #ffffff;
+  --bg-card-secundario: #ececef;
+  --texto-principal: #1a1a1a;
+  --texto-secundario: #5c5c66;
+  --borda: #e0e0e5;
+  --destaque: #e6b800;
+  --destaque-hover: #c99f00;
+  --texto-no-destaque: #1a1a1a;
+
+  --raio: 14px;
+  --sombra: 0 2px 10px rgba(0, 0, 0, 0.08);
+  --largura-max: 1200px;
+}
+
+body.dark-mode,
+body.tema-noturno {
+  --bg-principal: #121212;
+  --bg-card: #1e1e1e;
+  --bg-card-secundario: #2a2a2a;
+  --texto-principal: #f2f2f2;
+  --texto-secundario: #b0b0b8;
+  --borda: #333338;
+  --sombra: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+html { font-size: 15px; }
+
+body {
+  margin: 0;
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  line-height: 1.6;
+  background-color: var(--bg-principal);
+  color: var(--texto-principal);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 { color: var(--texto-principal); line-height: 1.25; }
+p { color: var(--texto-secundario); }
+
+/* Centraliza o conteúdo e evita que fique colado nas bordas */
+main, .container {
+  max-width: var(--largura-max);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card,
+.post-card,
+.publicacao-card,
+.turismo-card,
+.apresentacao,
+.container-publicacao,
+.turismo-container {
+  background-color: var(--bg-card);
+  color: var(--texto-principal);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.card:hover,
+.post-card:hover,
+.turismo-card:hover { transform: translateY(-3px); }
+
+.titulo-post,
+.turismo-card-conteudo h2 { color: var(--texto-principal); font-size: 1.2rem; }
+
+.texto-autor,
+.texto-detalhes,
+.turismo-card-conteudo p { color: var(--texto-secundario); font-size: 0.9rem; }
+
+/* Imagens dentro dos cards: tamanho controlado, sem esticar */
+.card img, .post-card img, .turismo-card img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: calc(var(--raio) - 4px);
+}
+
+.imagem-quadrado,
+.card-1, .card-2 { background-color: var(--bg-card-secundario); }
+
+/* ============================================================
+   BOTÕES
+   ============================================================ */
+button, .btn {
+  background: var(--destaque);
+  color: var(--texto-no-destaque);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+button:hover, .btn:hover { background: var(--destaque-hover); }
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+@media (max-width: 700px) {
+  html { font-size: 14px; }
+  main, .container { padding: 0 14px; }
+}
