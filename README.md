@@ -1,6 +1,6 @@
 <div align="center">
 
-# Feira Tecnológica 26
+# Feira Tecnológica 2026 ETEC MCM
 
 Plataforma web desenvolvida para a Feira Tecnológica, com sistema de login, publicações, curtidas e comentários.
 
