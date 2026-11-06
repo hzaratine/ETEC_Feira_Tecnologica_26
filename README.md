@@ -62,10 +62,10 @@ Todos os integrantes colaboraram na criação do design do projeto.
 
 | Integrante | Responsabilidades |
 | --- | --- |
-| **Henrique Zaratine** <br> ![Node.js](https://img.shields.io/badge/-API-339933?logo=nodedotjs&logoColor=white ) | Criação da API do site, sistema de login e Cadastro, interações e Banco de dados e melhorias nas paginas |
-| **Alexandro** <br> ![PHP](https://img.shields.io/badge/-PHP-777BB4?logo=php&logoColor=white) | Estrutura base inicial em PHP do site index header |
+| **Henrique Zaratine** <br> ![API](https://img.shields.io/badge/-API-339933?logo=nodedotjs&logoColor=white) <br> <img src="https://skillicons.dev/icons?i=html,css,js,nodejs,php,mysql,figma&perline=7" width="290" alt="Tecnologias" /> | Criação da API do site, sistema de login e cadastro, interações, banco de dados e melhorias nas páginas |
+| **Alexandro** <br> <img src="https://skillicons.dev/icons?i=php,html,css&perline=7" width="125" alt="Tecnologias" /> | Estrutura base inicial em PHP do site: index e header |
 | **Arthur** <br> ![Organização](https://img.shields.io/badge/-Organiza%C3%A7%C3%A3o-0A66C2) | Ideias, organização geral, banner da feira e organização dos materiais da feira |
-| **Gustavo Vieira** <br> ![Dados](https://img.shields.io/badge/-Organiza%C3%A7%C3%A3o-0A66C2) | Ideias, organização e estruturação dos dados Locais do site |
+| **Gustavo Vieira** <br> ![Organização](https://img.shields.io/badge/-Organiza%C3%A7%C3%A3o-0A66C2) | Ideias, organização e estruturação dos dados locais do site |
 | **Davi** <br> ![Figma](https://img.shields.io/badge/-Figma-F24E1E?logo=figma&logoColor=white) | Criação do projeto no Figma e direção do design |
 
 ---
