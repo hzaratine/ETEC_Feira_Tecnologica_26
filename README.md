@@ -97,7 +97,7 @@ C:\xampp\htdocs\
 Exemplo de como deve ficar:
 
 ```text
-C:\xampp\htdocs\Feira-Tecnologica-26
+C:\xampp\htdocs\ETEC_Feira_Tecnologica_26
 ```
 
 ### 2. Iniciar o XAMPP
@@ -223,6 +223,6 @@ Feche outros terminais que estejam executando o projeto ou encerre o processo qu
 
 <div align="center">
 
-Feira Tecnológica 26
+Feira Tecnológica 2026
 
 </div>
