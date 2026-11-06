@@ -62,7 +62,7 @@ Todos os integrantes colaboraram na criação do design do projeto.
 
 | Integrante | Responsabilidades |
 | --- | --- |
-| **Henrique Zaratine** <br> ![Node.js](https://img.shields.io/badge/-API-339933?logo=nodedotjs&logoColor=white/-HTML5-E34F26?logo=html5&logoColor=white) | Criação da API do site, sistema de login e Cadastro, interações e Banco de dados e melhorias nas paginas |
+| **Henrique Zaratine** <br> ![Node.js](https://img.shields.io/badge/-API-339933?logo=nodedotjs&logoColor=white ) | Criação da API do site, sistema de login e Cadastro, interações e Banco de dados e melhorias nas paginas |
 | **Alexandro** <br> ![PHP](https://img.shields.io/badge/-PHP-777BB4?logo=php&logoColor=white) | Estrutura base inicial em PHP do site index header |
 | **Arthur** <br> ![Organização](https://img.shields.io/badge/-Organiza%C3%A7%C3%A3o-0A66C2) | Ideias, organização geral, banner da feira e organização dos materiais da feira |
 | **Gustavo Vieira** <br> ![Dados](https://img.shields.io/badge/-Organiza%C3%A7%C3%A3o-0A66C2) | Ideias, organização e estruturação dos dados Locais do site |
