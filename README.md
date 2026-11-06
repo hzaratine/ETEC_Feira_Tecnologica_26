@@ -99,6 +99,12 @@ Exemplo de como deve ficar:
 ```text
 C:\xampp\htdocs\ETEC_Feira_Tecnologica_26
 ```
+**ATENÇAO MUITO IMPORTATE**
+
+no apache acesse hdttp.config e mude 
+C:\xampp\htdocs PARA C:\xampp\htdocs\ETEC_Feira_Tecnologica_26
+JAMAIS MEXER NO C:\xampp\apache PRESTE ATENÇAO  
+
 
 ### 2. Iniciar o XAMPP
 
