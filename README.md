@@ -67,7 +67,7 @@ Todos os integrantes colaboraram na criação do design do projeto.
 | **Alexandro Correa Miranda** <br> ![PHP](https://img.shields.io/badge/-PHP-777BB4?logo=php&logoColor=white) ![HTML5](https://img.shields.io/badge/-HTML5-E34F26?logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/-CSS3-1572B6?logo=css3&logoColor=white) ![Figma](https://img.shields.io/badge/-Figma-F24E1E?logo=figma&logoColor=white) | Desenvolvimento da estrutura base do site utilizando PHP, HTML e CSS, criação das páginas index e header, além de contribuições no design e na organização visual do projeto utilizando Figma.|
 | **Arthur David Chagas Aguidar** <br> ![Organização](https://img.shields.io/badge/-Organiza%C3%A7%C3%A3o-0A66C2) ![Figma](https://img.shields.io/badge/-Figma-F24E1E?logo=figma&logoColor=white) | Ideias, organização geral, banner da feira e organização dos materiais da feira e organização visual do projeto utilizando Figma |
 | **Gustavo Vieira Lima** <br> ![Organização](https://img.shields.io/badge/-Organiza%C3%A7%C3%A3o-0A66C2) ![Figma](https://img.shields.io/badge/-Figma-F24E1E?logo=figma&logoColor=white) | Ideias, organização e estruturação dos dados locais do site e organização visual do projeto utilizando Figma|
-| **Davi** <br> ![Figma](https://img.shields.io/badge/-Figma-F24E1E?logo=figma&logoColor=white) | Criação do projeto no Figma e direção do design |
+| **Davi de Araujo** <br> ![Figma](https://img.shields.io/badge/-Figma-F24E1E?logo=figma&logoColor=white) | Criação do projeto no Figma e direção do design |
 
 ---
 
